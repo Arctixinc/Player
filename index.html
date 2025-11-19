@@ -801,7 +801,7 @@
             <div class="hero-content">
                 <h1 class="hero-title">Premium Indian Live TV Streaming</h1>
                 <p class="hero-subtitle">Experience crystal-clear HD streaming of your favorite channels, anytime, anywhere</p>
-                <div class="credit-badge">Powered by NY BOTS</div>
+                <div class="credit-badge">JioTV Live</div>
             </div>
         </div>
 
@@ -936,11 +936,18 @@
         </div>
         <div class="footer-divider"></div>
         <div class="footer-bottom">
-            <div class="copyright">© 2025 JioTV Live. Powered by NY BOTS. All rights reserved.</div>
+            <div class="copyright">© 2025 JioTV Live. All rights reserved.</div>
         </div>
     </footer>
 
     <script>
+        // Fancy logger
+        const log = (message, style = 'font-weight: bold; color: #667eea;') => {
+            console.log(`%c[JioTV] ${message}`, style);
+        };
+
+        log('Application Initialized');
+
         let allChannels = [];
         let filteredChannels = [];
         const PLAYER_URL = 'player.html';
@@ -957,6 +964,7 @@
 
         // Load channels
         async function loadChannels() {
+            log('Fetching channel list...', 'color: #f093fb;');
             try {
                 const response = await fetch('https://playify.pages.dev/Ziotv.json');
                 const data = await response.json();
@@ -967,8 +975,10 @@
                 renderChannels(data);
                 updateStats(data.length);
                 document.getElementById('loading').style.display = 'none';
+                log(`Successfully loaded ${data.length} channels.`, 'color: #50fa7b;');
             } catch (error) {
                 console.error('Error loading channels:', error);
+                log('Failed to load channels.', 'color: #ff5555; font-weight: bold;');
                 document.getElementById('loading').style.display = 'none';
                 document.getElementById('error').style.display = 'block';
             }
@@ -1015,6 +1025,7 @@
         // Search functionality
         document.getElementById('searchInput').addEventListener('input', (e) => {
             const searchTerm = e.target.value.toLowerCase().trim();
+            log(`Searching for: "${searchTerm}"`);
             
             if (searchTerm === '') {
                 filteredChannels = allChannels;
@@ -1044,6 +1055,7 @@
 
         // Play channel with player.html
         function playChannel(channel) {
+            log(`Opening player for: ${channel.name}`, 'color: #8be9fd;');
             const modal = document.getElementById('playerModal');
             const iframe = document.getElementById('playerIframe');
             const title = document.getElementById('playerTitle');
@@ -1060,6 +1072,7 @@
 
         // Close player
         function closePlayer() {
+            log('Closing player.', 'color: #ffb86c;');
             const modal = document.getElementById('playerModal');
             const iframe = document.getElementById('playerIframe');
             
