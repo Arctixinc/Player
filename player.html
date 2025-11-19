@@ -564,7 +564,11 @@ document.addEventListener('DOMContentLoaded', async () => {
     // Priority 2: Fetch from JSON if channel name is provided
     else if (channelName) {
         try {
-            const response = await fetch('Ziotv.json');
+            const jsonUrl = (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1')
+                ? 'Ziotv.json'
+                : 'https://playify.pages.dev/Ziotv.json';
+            log(`Fetching channels from: ${jsonUrl}`);
+            const response = await fetch(jsonUrl);
             const channels = await response.json();
 
             if (Array.isArray(channels)) {
