@@ -60,25 +60,26 @@
     /* Netflix Control Bar Styling */
     .netflix-theme .shaka-bottom-controls {
       width: 100%;
-      padding: 0;
-      padding-bottom: 0;
+      padding: 0 12px;
+      padding-bottom: 8px;
       z-index: 1;
-      background: linear-gradient(to top, rgba(0,0,0,0.8) 0%, rgba(0,0,0,0.4) 50%, transparent 100%);
-    }
-    .netflix-theme .shaka-bottom-controls {
+      background: linear-gradient(to top, rgba(0,0,0,0.9) 0%, transparent 100%);
+      transition: opacity 0.25s cubic-bezier(0.4, 0, 0.2, 1);
       display: flex;
       flex-direction: column;
     }
+
     .netflix-theme .shaka-ad-controls {
       order: 1;
     }
     .netflix-theme .shaka-controls-button-panel {
       order: 2;
-      height: 48px;
-      padding: 0 20px;
+      height: 52px;
+      padding: 0 12px;
+      align-items: center;
     }
     .netflix-theme .shaka-range-container {
-      margin: 6px 20px 6px 20px;
+      margin: 0 20px 8px 20px;
       top: 0;
     }
     .netflix-theme .shaka-small-play-button {
@@ -422,12 +423,6 @@
       .netflix-theme .shaka-range-container {
         margin: 6px 12px 6px 12px;
       }
-      #myLogo {
-        width: 100px;
-        height: 32px;
-        right: 10px;
-        top: 10px;
-      }
       .credit {
         font-size: 11px;
         padding: 6px 12px;
@@ -435,12 +430,70 @@
         left: 12px;
       }
     }
+
+    /* Channel Metadata Styling */
+    .metadata-container {
+      position: absolute;
+      top: 24px;
+      left: 24px;
+      display: flex;
+      align-items: center;
+      gap: 16px;
+      z-index: 10;
+      background: rgba(0, 0, 0, 0.6);
+      padding: 12px 20px;
+      border-radius: 12px;
+      backdrop-filter: blur(10px);
+      opacity: 0;
+      transition: opacity 0.3s ease;
+    }
+
+    .shaka-video-container:not(.shaka-ad-is-playing) .metadata-container {
+        opacity: 1;
+    }
+
+    .channel-logo-container {
+      width: 50px;
+      height: 50px;
+    }
+
+    .channel-logo-container img {
+      width: 100%;
+      height: 100%;
+      object-fit: contain;
+      border-radius: 8px;
+    }
+
+    .channel-info h1 {
+      font-size: 1.2rem;
+      font-weight: 700;
+      color: #fff;
+      margin: 0;
+    }
+
+    .channel-info p {
+      font-size: 0.9rem;
+      color: rgba(255, 255, 255, 0.7);
+      margin: 0;
+    }
   </style>
 </head>
 <body>
 
 <div class="shaka-video-container netflix-theme" data-shaka-player>
   <video autoplay muted playsinline preload="auto" poster="https://blogger.googleusercontent.com/img/a/AVvXsEiGqaZeRBZ6Y7yV5ZYSRiNRhBa5q9_EMx7R5TJcHd3XJwwHh2YhNOGt76Y4vEcUIjvIaA7W-Tw1RyMLP-4WZwVHA4mk18zwXl7HdSL5WabprIasDOWJO7jpL0zTQB4p_y7X0Rv0xwe-cJ-GvxofAgeRp2FIiNgB90n_b8Cqw0sAaZqVhJg_fi9UyfSO8KY"></video>
+
+  <!-- Channel Metadata -->
+  <div class="metadata-container">
+    <div class="channel-logo-container">
+      <img id="channelLogo" src="" alt="Channel Logo">
+    </div>
+    <div class="channel-info">
+      <h1 id="channelName"></h1>
+      <p>Live Broadcast</p>
+    </div>
+  </div>
+
   <div class="manual-play-button" id="manualPlayButton">
     ▶ Click to Play
   </div>
@@ -511,7 +564,7 @@ document.addEventListener('DOMContentLoaded', async () => {
     // Priority 2: Fetch from JSON if channel name is provided
     else if (channelName) {
         try {
-            const response = await fetch('https://playify.pages.dev/Ziotv.json');
+            const response = await fetch('Ziotv.json');
             const channels = await response.json();
 
             if (Array.isArray(channels)) {
@@ -534,6 +587,11 @@ document.addEventListener('DOMContentLoaded', async () => {
                     // Update poster/logo if available
                     if (channel.logo) {
                         video.setAttribute('poster', channel.logo);
+                        document.getElementById('channelLogo').src = channel.logo;
+                    }
+
+                    if (channel.name) {
+                        document.getElementById('channelName').textContent = channel.name;
                     }
                     
                     // Update page title

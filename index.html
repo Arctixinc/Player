@@ -966,7 +966,7 @@
         async function loadChannels() {
             log('Fetching channel list...', 'color: #f093fb;');
             try {
-                const response = await fetch('https://playify.pages.dev/Ziotv.json');
+                const response = await fetch('Ziotv.json');
                 const data = await response.json();
                 
                 allChannels = data;
@@ -1031,7 +1031,7 @@
                 filteredChannels = allChannels;
             } else {
                 filteredChannels = allChannels.filter(channel => 
-                    channel.name.toLowerCase().includes(searchTerm)
+                    channel.name && channel.name.toLowerCase().includes(searchTerm)
                 );
             }
             
